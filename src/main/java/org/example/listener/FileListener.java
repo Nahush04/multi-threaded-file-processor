@@ -16,7 +16,9 @@ import java.util.*;
 @Component
 public class FileListener {
     private static final Logger logger = LoggerFactory.getLogger(FileListener.class);
-    private static final String FOLDER_PATH = "path/to/folder/incoming";
+    private static final String incomingFolder = "path/to/folder/incoming";
+    String successFolder = "path/to/folder/success";
+    String errorFolder = "path/to/folder/error";
     private final BatchProcessingService batchProcessingService;
     private final MoveService moveService;
 
@@ -27,11 +29,10 @@ public class FileListener {
 
     @Scheduled(fixedRate = 20000) // Check in every 20 seconds
     public void checkFolder() throws IOException, CsvException {
-        File folder = new File(FOLDER_PATH);
-        String errorFolder = "path/to/folder/error";
+        File folder = new File(incomingFolder);
 
         if (!folder.exists() || !folder.isDirectory()) {
-            logger.error("Invalid folder path provided: {}", FOLDER_PATH);
+            logger.error("Invalid folder path provided: {}", incomingFolder);
             return;
         }
 
@@ -59,9 +60,6 @@ public class FileListener {
     }
 
     public void processFile(File file) {
-        String successFolder = "path/to/folder/success";
-        String errorFolder = "path/to/folder/error";
-
         List<String[]> rows;
         try (CSVReader reader = new CSVReader(new FileReader(file))) {
             rows = reader.readAll();
@@ -72,24 +70,24 @@ public class FileListener {
 
         // Group data into BH blocks
         Map<Integer, List<String[]>> batchBlocks = new LinkedHashMap<>();
-        List<String[]> currentBlock = null;
-        Integer currentBHKey = null;
+        List<String[]> currentBatch = null;
+        Integer currentBatchNo = null;
 
         for (String[] row : rows) {
             if (row.length < 4) continue;
 
             if (row[0].equals("BH")) {
-                currentBHKey = Integer.parseInt(row[1]);
-                currentBlock = new ArrayList<>();
-                batchBlocks.put(currentBHKey, currentBlock);
+                currentBatchNo = Integer.parseInt(row[1]);
+                currentBatch = new ArrayList<>();
+                batchBlocks.put(currentBatchNo, currentBatch);
             }
 
-            if (currentBlock != null) {
-                currentBlock.add(row);
+            if (currentBatch != null) {
+                currentBatch.add(row);
             }
 
             if (row[0].equals("BI")) {
-                currentBlock = null;
+                currentBatch = null;
             }
         }
 
