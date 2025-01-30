@@ -25,7 +25,7 @@ This project is a **high-performance, multi-threaded file processing system** bu
 ### **1. Clone the Repository**
 
 ```bash
-git clone https://github.com/yourusername/multi-threaded-file-processor.git
+git clone https://github.com/Nahush04/multi-threaded-file-processor.git
 cd multi-threaded-file-processor
 ```
 
@@ -58,24 +58,25 @@ java -cp bin com.example.FileProcessor
 
 ## **Usage**
 
-1. Place CSV files in the **incoming folder**.
+1. Place CSV files in the **incoming folder** which will be scanned for new files every 20 seconds.
 2. The system will automatically detect, validate, and process the file.
 3. Successfully processed files move to the `success` folder.
-4. If any block fails, the file moves to the `error` folder.
+4. If any batch block fails, the file moves to the `error` folder.
 
 ## **CSV File Structure**
 
-```csv
+- `BH` (Batch Header): Marks the start of a batch : (Batch No, batch date, location)
+- `TH` (Transaction Header): Represents a transaction : (Tran Ref Nbr, Date, transaction amount)
+- `TI` (Transaction Item): Represents individual items : (Item Nbr, description, amount)
+- `BI` (Batch Summary): Confirms batch integrity : (Batch No, item count)
+
+```sample csv
 BH,1,01/27/2025,us
-TH,22,01/27/2025,300
-TI,121,mobile,100
+TH,22,01/27/2025,400
+TI,121,earbuds,100
+TI,122,mobile,300
 BI,1,2
 ```
-
-- `BH` (Batch Header): Marks the start of a batch.
-- `TH` (Transaction Header): Represents a transaction.
-- `TI` (Transaction Item): Represents individual items.
-- `BI` (Batch Summary): Confirms batch integrity.
 
 ## **Error Handling**
 
@@ -86,12 +87,6 @@ BI,1,2
 ## **License**
 
 This project is licensed under the MIT License.
-
-## **Contributors**
-
-- [Your Name](https://github.com/yourusername)
-
----
 
 ### 🚀 **Feel free to contribute and improve the system!**
 
