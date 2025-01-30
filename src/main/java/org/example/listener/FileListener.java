@@ -16,7 +16,7 @@ import java.util.*;
 @Component
 public class FileListener {
     private static final Logger logger = LoggerFactory.getLogger(FileListener.class);
-    private static final String FOLDER_PATH = "G:/More Java Backend Projects/Listener/ListenerResult/incoming";
+    private static final String FOLDER_PATH = "path/to/folder/incoming";
     private final BatchProcessingService batchProcessingService;
     private final MoveService moveService;
 
@@ -28,7 +28,7 @@ public class FileListener {
     @Scheduled(fixedRate = 20000) // Check in every 20 seconds
     public void checkFolder() throws IOException, CsvException {
         File folder = new File(FOLDER_PATH);
-        String errorFolder = "G:/More Java Backend Projects/Listener/ListenerResult/exception";
+        String errorFolder = "path/to/folder/error";
 
         if (!folder.exists() || !folder.isDirectory()) {
             logger.error("Invalid folder path provided: {}", FOLDER_PATH);
@@ -59,8 +59,8 @@ public class FileListener {
     }
 
     public void processFile(File file) {
-        String successFolder = "G:/More Java Backend Projects/Listener/ListenerResult/final";
-        String errorFolder = "G:/More Java Backend Projects/Listener/ListenerResult/exception";
+        String successFolder = "path/to/folder/success";
+        String errorFolder = "path/to/folder/error";
 
         List<String[]> rows;
         try (CSVReader reader = new CSVReader(new FileReader(file))) {
