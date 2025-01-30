@@ -1,5 +1,7 @@
 package org.example.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.io.File;
 import java.util.ArrayList;
@@ -11,6 +13,8 @@ import java.util.concurrent.Future;
 
 @Service
 public class BatchProcessingService {
+    private static final Logger logger = LoggerFactory.getLogger(BatchProcessingService.class);
+
     private final ExecutorService executorService = Executors.newFixedThreadPool(5); // Thread pool for parallel execution
     private final ValidationService validationService;
     private final ListenerService listenerService;
@@ -28,10 +32,10 @@ public class BatchProcessingService {
 
         // Submit each BH block as a separate task
         for (Map.Entry<Integer, List<String[]>> entry : batchBlocks.entrySet()) {
-            int batchKey = entry.getKey();
-            List<String[]> block = entry.getValue();
+            int batchNo = entry.getKey();
+            List<String[]> batch = entry.getValue();
 
-            Future<Boolean> future = executorService.submit(() -> processSingleBatch(batchKey, block, file, errorFolder));
+            Future<Boolean> future = executorService.submit(() -> processSingleBatch(batchNo, batch, file, errorFolder));
             futures.add(future);
         }
 
@@ -43,7 +47,7 @@ public class BatchProcessingService {
                 }
             } catch (Exception e) {
                 hasErrors = true;
-                System.err.println("Error in parallel BH block processing: " + e.getMessage());
+                logger.error("Error in parallel BH block processing: {}", e.getMessage());
             }
         }
 
@@ -59,7 +63,7 @@ public class BatchProcessingService {
         try {
             // Validate the batch block before inserting
             if (!validationService.validateCsvRows(block)) {
-                System.err.println("Validation failed for block " + batchKey + " in file: " + file.getName());
+                logger.error("Validation failed for block {} in file: {}", batchKey, file.getName());
                 return false;
             }
 
@@ -67,7 +71,7 @@ public class BatchProcessingService {
             listenerService.saveAllRows(block);
             return true;
         } catch (Exception e) {
-            System.err.println("Error processing BH block " + batchKey + " in file: " + file.getName() + ": " + e.getMessage());
+            logger.error("Error processing BH block {} in file: {}: {}", batchKey, file.getName(), e.getMessage());
             return false;
         }
     }
