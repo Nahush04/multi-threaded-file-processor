@@ -14,11 +14,12 @@ This project is a **high-performance, multi-threaded file processing system** bu
 
 ## **How It Works**
 
-1. **File Listener (**`FileListener`**)** watches a directory for incoming CSV files.
-2. **Validation Service (**\`\`**)** checks each `BH` block separately before inserting data.
-3. **Listener Service (**\`\`**)** handles database insertions using PostgreSQL and ensures transactions.
-4. **Move Service (**\`\`**)** moves processed files to `success` or `error` folders.
-5. **Multi-threading (**\`\`**)** assigns a thread to each `BH` block for parallel processing.
+1. **File Listener** watches a directory for incoming CSV files.
+2. **Validation Service** checks each `BH` block separately before inserting data and validates using the `BI` row.
+3. **Listener Service** handles database insertions using PostgreSQL and ensures transactions.
+4. **Move Service** moves processed files to `success` or `error` folders.
+5. **Batch Processing Service** handles multi-threaded execution of each `BH` block.
+6. **Multi-threading (**`ExecutorService`**)** assigns a thread to each `BH` block for parallel processing.
 
 ## **Installation & Setup**
 
@@ -58,17 +59,17 @@ java -cp bin com.example.FileProcessor
 
 ## **Usage**
 
-1. Place CSV files in the **incoming folder** which will be scanned for new files every 20 seconds.
+1. Place CSV files in the **incoming folder** which will scan for new files every 20 seconds.
 2. The system will automatically detect, validate, and process the file.
 3. Successfully processed files move to the `success` folder.
-4. If any batch block fails, the file moves to the `error` folder.
+4. If any block fails, the file moves to the `error` folder.
 
 ## **CSV File Structure**
 
-- `BH` (Batch Header): Marks the start of a batch : (Batch No, batch date, location)
-- `TH` (Transaction Header): Represents a transaction : (Tran Ref Nbr, Date, transaction amount)
-- `TI` (Transaction Item): Represents individual items : (Item Nbr, description, amount)
-- `BI` (Batch Summary): Confirms batch integrity : (Batch No, item count)
+* `BH` (Batch Header): Marks the start of a batch : (Batch No, batch date, location)
+* `TH` (Transaction Header): Represents a transaction : (Tran Ref Nbr, Date, transaction amount)
+* `TI` (Transaction Item): Represents individual items : (Item Nbr, description, amount)
+* `BI` (Batch Summary): Confirms batch integrity : (Batch No, item count)
 
 ```sample csv
 BH,1,01/27/2025,us
@@ -87,6 +88,12 @@ BI,1,2
 ## **License**
 
 This project is licensed under the MIT License.
+
+## **Contributors**
+
+- [Nahush](https://github.com/Nahush04)
+
+---
 
 ### 🚀 **Feel free to contribute and improve the system!**
 
