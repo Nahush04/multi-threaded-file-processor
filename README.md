@@ -14,7 +14,7 @@ This project is a **high-performance, multi-threaded file processing system** bu
 
 ## **How It Works**
 
-1. **File Listener (**\`FileListener\`**)** watches a directory for incoming CSV files.
+1. **File Listener (**`FileListener`**)** watches a directory for incoming CSV files.
 2. **Validation Service (**\`\`**)** checks each `BH` block separately before inserting data.
 3. **Listener Service (**\`\`**)** handles database insertions using PostgreSQL and ensures transactions.
 4. **Move Service (**\`\`**)** moves processed files to `success` or `error` folders.
