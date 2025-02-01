@@ -27,7 +27,7 @@ public class AppConfig {
         dataSource.setDriverClassName("org.postgresql.Driver");
         dataSource.setUrl("jdbc:postgresql://localhost:5432/listener");
         dataSource.setUsername("postgres");
-        dataSource.setPassword("fonebone12");
+        dataSource.setPassword("password");
         return dataSource;
     }
 
